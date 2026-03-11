@@ -3,433 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恋爱大师输入法</title>
+    <title>恋爱大师 - 智能话术助手</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 20px;
-        }
-        
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        
-        .chat-area {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-            min-height: 200px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        .chat-area h3 {
-            color: #c44569;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        
-        .message-input {
-            width: 100%;
-            min-height: 80px;
-            border: 2px solid #f0f0f0;
-            border-radius: 15px;
-            padding: 15px;
-            font-size: 16px;
-            resize: vertical;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .message-input:focus {
-            border-color: #ff6b9d;
-        }
-        
-        .style-selector {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-        
-        .style-btn {
-            padding: 8px 16px;
-            border: 2px solid #ff6b9d;
-            background: white;
-            color: #ff6b9d;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        
-        .style-btn.active {
-            background: #ff6b9d;
-            color: white;
-        }
-        
-        .generate-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .generate-btn:active {
-            transform: scale(0.98);
-        }
-        
-        .suggestions {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        .suggestions h3 {
-            color: #c44569;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-        
-        .suggestion-item {
-            background: linear-gradient(135deg, #fff5f7 0%, #ffeef2 100%);
-            border-left: 4px solid #ff6b9d;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 0 10px 10px 0;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-        
-        .suggestion-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 20px rgba(255,107,157,0.3);
-        }
-        
-        .suggestion-text {
-            color: #333;
-            font-size: 15px;
-            line-height: 1.5;
-        }
-        
-        .suggestion-style {
-            display: inline-block;
-            padding: 2px 8px;
-            background: #ff6b9d;
-            color: white;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-top: 8px;
-        }
-        
-        .copy-hint {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #ff6b9d;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .suggestion-item:hover .copy-hint {
-            opacity: 1;
-        }
-        
-        .loading {
-            text-align: center;
-            color: #ff6b9d;
-            padding: 20px;
-        }
-        
-        .loading::after {
-            content: '';
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ff6b9d;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 1000;
-        }
-        
-        .toast.show {
-            opacity: 1;
-        }
-        
-        .tips {
-            background: rgba(255,255,255,0.2);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 20px;
-            color: white;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-        
-        .tips strong {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%); min-height: 100vh; padding-bottom: 100px; }
+        .header { background: rgba(255,255,255,0.95); padding: 15px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #ff6b9d, #c44569); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #c44569; }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: #f5f5f5; cursor: pointer; font-size: 20px; transition: all 0.3s; }
+        .icon-btn:hover, .icon-btn.active { background: #ff6b9d; }
+        .mode-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .mode-tab { padding: 10px 20px; border-radius: 20px; border: none; background: #f0f0f0; color: #666; font-size: 14px; cursor: pointer; white-space: nowrap; transition: all 0.3s; }
+        .mode-tab.active { background: linear-gradient(135deg, #ff6b9d, #c44569); color: white; }
+        .main-content { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .persona-section, .category-section, .phrases-section, .ranking-section, .favorites-section { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        .section-title { font-size: 16px; color: #333; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .persona-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .persona-item { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; border-radius: 15px; background: #f8f8f8; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .persona-item:hover { transform: translateY(-3px); }
+        .persona-item.active { background: linear-gradient(135deg, #fff0f3, #ffe4ec); border-color: #ff6b9d; }
+        .persona-emoji { font-size: 28px; margin-bottom: 5px; }
+        .persona-name { font-size: 12px; color: #666; text-align: center; }
+        .persona-item.active .persona-name { color: #c44569; font-weight: bold; }
+        .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .category-item { display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border-radius: 15px; background: linear-gradient(135deg, #f8f9ff, #fff5f8); cursor: pointer; transition: all 0.3s; border: 1px solid #f0f0f0; }
+        .category-item:hover, .category-item.active { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,107,157,0.2); border-color: #ff6b9d; }
+        .category-emoji { font-size: 32px; margin-bottom: 8px; }
+        .category-name { font-size: 13px; color: #333; font-weight: 500; }
+        .phrases-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .filter-tabs { display: flex; gap: 8px; }
+        .filter-tab { padding: 6px 12px; border-radius: 15px; border: none; background: #f0f0f0; color: #666; font-size: 12px; cursor: pointer; }
+        .filter-tab.active { background: #ff6b9d; color: white; }
+        .phrase-card { background: linear-gradient(135deg, #fff9fb, #fff0f5); border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 4px solid #ff6b9d; position: relative; transition: all 0.3s; }
+        .phrase-card:hover { transform: translateX(5px); box-shadow: 0 5px 20px rgba(255,107,157,0.15); }
+        .phrase-text { color: #333; font-size: 15px; line-height: 1.6; margin-bottom: 10px; }
+        .phrase-meta { display: flex; justify-content: space-between; align-items: center; }
+        .phrase-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .tag { padding: 3px 8px; border-radius: 10px; font-size: 11px; background: rgba(255,107,157,0.1); color: #c44569; }
+        .phrase-actions { display: flex; gap: 8px; }
+        .action-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: white; cursor: pointer; font-size: 16px; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .action-btn:hover { transform: scale(1.1); }
+        .action-btn.copied { background: #4CAF50; color: white; }
+        .action-btn.favorited { background: #ff6b9d; color: white; }
+        .ranking-list { display: flex; flex-direction: column; gap: 10px; }
+        .ranking-item { display: flex; align-items: center; padding: 12px; background: #f8f8f8; border-radius: 12px; transition: all 0.3s; cursor: pointer; }
+        .ranking-item:hover { background: #fff0f3; }
+        .rank-number { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-right: 12px; }
+        .rank-number.top3 { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+        .rank-number.normal { background: #e0e0e0; color: #666; }
+        .rank-content { flex: 1; }
+        .rank-text { font-size: 14px; color: #333; margin-bottom: 4px; }
+        .rank-stats { font-size: 12px; color: #999; }
+        .empty-state { text-align: center; padding: 40px; color: #999; }
+        .empty-state-emoji { font-size: 48px; margin-bottom: 10px; }
+        .input-section { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 100; }
+        .input-container { max-width: 600px; margin: 0 auto; display: flex; gap: 10px; align-items: flex-end; }
+        .input-wrapper { flex: 1; background: #f5f5f5; border-radius: 20px; padding: 10px 15px; display: flex; align-items: flex-end; gap: 10px; }
+        .message-input { flex: 1; border: none; background: transparent; font-size: 15px; resize: none; outline: none; max-height: 100px; min-height: 24px; }
+        .input-actions { display: flex; gap: 8px; }
+        .input-action-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: white; cursor: pointer; font-size: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .send-btn { width: 50px; height: 50px; border-radius: 50%; border: none; background: linear-gradient(135deg, #ff6b9d, #c44569); color: white; font-size: 20px; cursor: pointer; transition: all 0.3s; }
+        .send-btn:hover { transform: scale(1.05); }
+        .image-preview { display: flex; gap: 10px; margin-top: 10px; overflow-x: auto; }
+        .preview-item { position: relative; width: 80px; height: 80px; border-radius: 10px; overflow: hidden; }
+        .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-remove { position: absolute; top: 5px; right: 5px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; cursor: pointer; font-size: 12px; }
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 25px; font-size: 14px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 1000; }
+        .toast.show { opacity: 1; }
+        #imageInput { display: none; }
+        .time-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 12px; font-size: 12px; margin-bottom: 10px; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💕 恋爱大师</h1>
-            <p>输入对方的消息，获取智能回复建议</p>
-        </div>
-        
-        <div class="chat-area">
-            <h3>📝 对方说了什么？</h3>
-            <textarea class="message-input" id="messageInput" placeholder="粘贴对方的聊天消息..."></textarea>
-            
-            <div class="style-selector">
-                <button class="style-btn active" data-style="flirty">😘 撩人</button>
-                <button class="style-btn" data-style="gentle">🥰 温柔</button>
-                <button class="style-btn" data-style="humor">😄 幽默</button>
-                <button class="style-btn" data-style="direct">💪 直接</button>
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">
+                <div class="logo-icon">💕</div>
+                <div class="logo-text">恋爱大师</div>
             </div>
-            
-            <button class="generate-btn" id="generateBtn">✨ 生成回复建议</button>
+            <div class="header-actions">
+                <button class="icon-btn" id="favoritesBtn" title="我的收藏">⭐</button>
+                <button class="icon-btn" id="rankingBtn" title="排行榜">🏆</button>
+            </div>
         </div>
-        
-        <div class="suggestions" id="suggestionsArea" style="display: none;">
-            <h3>💡 回复建议（点击复制）</h3>
-            <div id="suggestionsList"></div>
-        </div>
-        
-        <div class="tips">
-            <strong>💝 使用技巧：</strong>
-            1. 粘贴对方的完整消息，上下文越完整建议越准确<br>
-            2. 根据关系阶段选择不同风格<br>
-            3. 点击建议即可复制，然后粘贴到聊天软件
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="reply">💬 帮我回复</button>
+            <button class="mode-tab" data-mode="express">💝 帮我表达</button>
+            <button class="mode-tab" data-mode="quotes">📖 恋爱语录</button>
+            <button class="mode-tab" data-mode="open">🎯 搭讪话术</button>
         </div>
     </div>
     
-    <div class="toast" id="toast">已复制到剪贴板！</div>
+    <div class="main-content">
+        <div class="persona-section">
+            <div class="section-title">🎭 选择你的人设</div>
+            <div class="persona-grid" id="personaGrid"></div>
+        </div>
+        
+        <div class="category-section" id="categorySection">
+            <div class="section-title">📂 选择场景</div>
+            <div class="category-grid" id="categoryGrid"></div>
+        </div>
+        
+        <div class="ranking-section hidden" id="rankingSection">
+            <div class="section-title">🏆 热门话术排行榜</div>
+            <div class="time-badge" id="timeBadge">🌅 早晨推荐</div>
+            <div class="ranking-list" id="rankingList"></div>
+        </div>
+        
+        <div class="favorites-section hidden" id="favoritesSection">
+            <div class="section-title">⭐ 我的收藏</div>
+            <div id="favoritesList"></div>
+        </div>
+        
+        <div class="phrases-section" id="phrasesSection">
+            <div class="phrases-header">
+                <div class="section-title">💡 推荐回复</div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="hot">🔥 热门</button>
+                    <button class="filter-tab" data-filter="new">✨ 最新</button>
+                    <button class="filter-tab" data-filter="match">🎯 匹配</button>
+                </div>
+            </div>
+            <div id="phrasesList"></div>
+        </div>
+    </div>
+    
+    <div class="input-section">
+        <div class="input-container">
+            <div class="input-wrapper">
+                <textarea class="message-input" id="messageInput" placeholder="粘贴对方的消息，或描述你想表达的内容..." rows="1"></textarea>
+                <div class="input-actions">
+                    <button class="input-action-btn" id="imageBtn" title="上传图片">📷</button>
+                </div>
+            </div>
+            <button class="send-btn" id="sendBtn" title="生成回复">💝</button>
+        </div>
+        <div class="image-preview" id="imagePreview"></div>
+    </div>
+    
+    <input type="file" id="imageInput" accept="image/*" multiple>
+    <div class="toast" id="toast"></div>
 
     <script>
-        // 回复模板库
-        const templates = {
-            flirty: [
-                "哈哈，你这样说让我心跳加速了呢~ 💓",
-                "你是不是想我了？我也刚好在想某人哦~ 😉",
-                "这句话我要收藏起来，以后想你了就看看 😘",
-                "你真的很会说话，难怪我这么喜欢你 💕",
-                "被你这么一说，我脸都红了... 😳",
-                "你是不是偷偷学了情话大全？这么会撩~ 🥰",
-                "我怀疑你在暗示什么，但我没有证据 🤭",
-                "你这样我会当真的哦，到时候可别后悔~ 😏",
-                "怎么办，看到消息就开始傻笑了... 😅",
-                "你是不是有魔力？怎么一句话就让我心动了 ✨"
-            ],
-            gentle: [
-                "谢谢你分享这些，感觉很温暖呢~ 🌸",
-                "能听到你这么说，今天的心情都变好了 💫",
-                "你真的很细心，能注意到这些细节 🥺",
-                "和你聊天总是觉得很舒服，很放松 🍃",
-                "你的消息我反复看了好几遍，真的很开心 💌",
-                "不管多忙，看到你的消息都会觉得很安心 🌙",
-                "你总能说出让我感动的话，谢谢你 💝",
-                "有你在，每一天都很值得期待 🌅",
-                "你的关心我都收到了，你也要照顾好自己哦 🌷",
-                "和你在一起的时光，总是过得特别快 ⏰"
-            ],
-            humor: [
-                "好家伙，这波操作我给满分！💯",
-                "你是不是偷偷去上了情话补习班？📚",
-                "我宣布，今日最佳发言非你莫属！🏆",
-                "哈哈哈哈笑死我了，你怎么这么有趣 🤣",
-                "这位同学，你的情话技能点满了吧？🎮",
-                "我怀疑你在套路我，但我没有证据 🕵️",
-                "完了完了，被你装到了！😎",
-                "你这波在大气层，我还在地下室 🏢",
-                "会说话就多说点，我爱听！🎤",
-                "你是不是偷偷背着我看了恋爱攻略？📖"
-            ],
-            direct: [
-                "我也想你，什么时候见面？🤔",
-                "说这么多，不如直接约我出来 ☕",
-                "我喜欢你，认真的 💯",
-                "别光说，行动呢？😏",
-                "想我就直说，我也一样 💪",
-                "周末有空吗？我想见你 🗓️",
-                "你这样我会误会的...除非你是认真的 🤨",
-                "别绕弯子了，直接点吧 😤",
-                "我也对你有好感，要不要试试？❓",
-                "说这么多，不如我们在一起吧 💑"
-            ]
-        };
-        
-        // 根据输入内容生成个性化回复
-        function generatePersonalized(message, style) {
-            const responses = templates[style];
-            const personalized = [];
-            
-            // 根据消息内容选择相关回复
-            if (message.includes('想') || message.includes('念')) {
-                personalized.push("我也想你了，特别想的那种 💭");
-            }
-            if (message.includes('忙') || message.includes('累')) {
-                personalized.push("辛苦了，忙完记得休息，我会一直等你 💪");
-            }
-            if (message.includes('吃') || message.includes('饿')) {
-                personalized.push("好好吃饭哦，不然我会心疼的 🍚");
-            }
-            if (message.includes('睡') || message.includes('困')) {
-                personalized.push("早点休息，梦里要有我哦 🌙");
-            }
-            if (message.includes('好看') || message.includes('美') || message.includes('帅')) {
-                personalized.push("你眼光真好，不过我觉得你更好看 😘");
-            }
-            if (message.includes('谢谢') || message.includes('感谢')) {
-                personalized.push("不用谢，为你做什么我都愿意 💝");
-            }
-            
-            // 补充随机回复
-            const shuffled = [...responses].sort(() => 0.5 - Math.random());
-            const needed = 3 - personalized.length;
-            for (let i = 0; i < needed && i < shuffled.length; i++) {
-                if (!personalized.includes(shuffled[i])) {
-                    personalized.push(shuffled[i]);
-                }
-            }
-            
-            return personalized.slice(0, 3);
-        }
-        
-        // 当前选中的风格
-        let currentStyle = 'flirty';
-        
-        // 风格选择
-        document.querySelectorAll('.style-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentStyle = btn.dataset.style;
-            });
-        });
-        
-        // 生成建议
-        document.getElementById('generateBtn').addEventListener('click', () => {
-            const message = document.getElementById('messageInput').value.trim();
-            if (!message) {
-                showToast('请先输入对方的消息哦~');
-                return;
-            }
-            
-            const suggestionsArea = document.getElementById('suggestionsArea');
-            const suggestionsList = document.getElementById('suggestionsList');
-            
-            suggestionsArea.style.display = 'block';
-            suggestionsList.innerHTML = '<div class="loading">正在生成回复建议</div>';
-            
-            // 模拟生成延迟
-            setTimeout(() => {
-                const suggestions = generatePersonalized(message, currentStyle);
-                const styleNames = {
-                    flirty: '撩人',
-                    gentle: '温柔',
-                    humor: '幽默',
-                    direct: '直接'
-                };
-                
-                suggestionsList.innerHTML = suggestions.map((text, index) => `
-                    <div class="suggestion-item" data-text="${text}">
-                        <div class="suggestion-text">${text}</div>
-                        <span class="suggestion-style">${styleNames[currentStyle]}</span>
-                        <span class="copy-hint">点击复制</span>
-                    </div>
-                `).join('');
-                
-                // 添加点击复制功能
-                document.querySelectorAll('.suggestion-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const text = item.dataset.text;
-                        navigator.clipboard.writeText(text).then(() => {
-                            showToast('已复制！快去粘贴发送吧~');
-                        });
-                    });
-                });
-                
-                // 滚动到建议区域
-                suggestionsArea.scrollIntoView({ behavior: 'smooth' });
-            }, 800);
-        });
-        
-        // 显示提示
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-        
-        // 回车键生成
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                document.getElementById('generateBtn').click();
-            }
-        });
-    </script>
-</body>
-</html>
